@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html ng-app="invoices" lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Add Invoice</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/app.css">
+  </head>
+  <body ng-controller="addInvoiceCtrl">
+
+    <nav class="navbar navbar-default navbar-static-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">Invoice App</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="products.html">Products</a></li>
+            <li><a href="customers.html">Customers</a></li>
+            <li class="active"><a href="add-invoice.html">Invoices</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+      <h1>Add Invoice</h1>
+      <h3>Select customer</h3>
+      <select name="customer-select" ng-model="selectedCustomer" ng-options="customer.name for customer in customers" ng-change="invoiceUpdate()"></select>
+      <h3>Select products</h3>
+      <table class="table">
+        <tr>
+          <th>Product</th>
+          <th>Quantity</th>
+          <th>Price</th>
+          <th>Total</th>
+        </tr>
+        <tr ng-repeat="invoiceItem in invoiceItems">
+          <td>{{productById(invoiceItem.product_id).name}}</td>
+          <td>{{invoiceItem.quantity}}</td>
+          <td>{{productById(invoiceItem.product_id).price}}</td>
+          <td>{{invoiceItem.quantity*productById(invoiceItem.product_id).price | currency: ''}}</td>
+        </tr>
+        <tr>
+          <td>
+            <select name="product-select" ng-model="selectedProduct" ng-options="product.name for product in products"></select>
+          </td>
+          <td><input type="number" ng-model="itemQuantity"></td>
+          <td>
+            {{selectedProduct.price}}
+          </td>
+          <td ng-model="itemPrice" ng-change="invoiceUpdate()">
+            {{itemQuantity*selectedProduct.price | currency:''}}
+          </td>
+        </tr>
+      </table>
+      <button class="btn .btn-default" ng-click="addInvoiceItem(newInvoice.id,selectedProduct.id,itemQuantity)"><i class="fa fa-plus" aria-hidden="true"></i></button>
+      <div class="row">
+        <div class="col-md-6">
+          <h3>Select discount</h3>
+          <div class="form-group">
+            <input type="number" name="discount" min="0" max="99" ng-model="newInvoice.discount" ng-change="invoiceUpdate()"/>
+            <label for="discount">%</label>
+          </div>
+        </div>
+        <div class="col-md-6 text-right">
+          <h2>Total cost: {{newInvoice.total*(1-newInvoice.discount/100) | currency: ''}}</h2>
+        </div>
+      </div>
+    </div> <!-- /container -->
+
+    <script type="text/javascript" src="/js/lib/jquery/jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+    <script src="https://code.angularjs.org/1.6.4/angular.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/addInvoice.js"></script>
+  </body>
+</html>
